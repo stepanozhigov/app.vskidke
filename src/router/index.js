@@ -2,27 +2,49 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'home',
+    component: Home,
+    beforeEnter: (to, from, next) => {
+      if(!localStorage.getItem('loggedIn')) {
+        next({name:'login'})
+      } else {
+        next();
+      }
+    }
   },
   {
     path: '/projects',
-    name: 'Projects',
-    component: () => import('../views/Projects.vue')
+    name: 'projects',
+    component: () => import('../views/Projects.vue'),
+    beforeEnter: (to, from, next) => {
+      if(!localStorage.getItem('loggedIn')) {
+        next({name:'login'})
+      } else {
+        next();
+      }
+    }
   },
   {
     path: '/team',
-    name: 'Team',
-    component: () => import('../views/Team.vue')
+    name: 'team',
+    component: () => import('../views/Team.vue'),
+    beforeEnter: (to, from, next) => {
+      if(!localStorage.getItem('loggedIn')) {
+        next({name:'login'})
+      } else {
+        next();
+      }
+    }
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     component: () => import('../views/Login.vue')
   }
 
