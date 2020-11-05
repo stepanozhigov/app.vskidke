@@ -1,21 +1,16 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import axios from 'axios'
-
 axios.defaults.withCredentials = true;
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
+  
+  const state = {
     employees: [],
   },
-  getters: {
+  const getters = {
     employees: state => state.employees,
   },
-  mutations: {
+  const mutations = {
     SET_EMPLOYEES: (state,payload) => (state.employees = payload),
   },
-  actions: {
+  const actions= {
     async getEmployees() {
       try {
         const resp = await axios.get('/employees');
@@ -26,7 +21,8 @@ export default new Vuex.Store({
         console.log('finally');
       }
     }
-  },
-  modules: {
   }
-})
+
+  export default {
+      state, getters,mutatations,actions
+  }
