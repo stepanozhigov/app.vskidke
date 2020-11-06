@@ -1,40 +1,37 @@
 <template>
 	<v-app>
-		<v-container class="fill-height" fluid>
+		<v-container fluid fill-height>
 			<v-row align="center" justify="center">
-				<v-col cols="12" sm="8" md="8">
-					<v-card class="elevation-12">
-						<v-window v-model="step">
-							<v-window-item :value="1">
-								<v-row>
-									<v-col col="12" md="8">
-										<v-card-text class="mt-12">
-											<h1
-												class="text-center display-2 teal--text text--accent-3"
-											>
-												Sign in
-											</h1>
-											<div class="text-center mt-4">
-												<v-btn class="mx-2" color="black" fab outlined>
-													<v-icon>fab fa-facebook</v-icon>
-												</v-btn>
-												<v-btn class="mx-2" color="black" fab outlined>
-													<v-icon>fab fa-google-plus-g</v-icon>
-												</v-btn>
-												<v-btn class="mx-2" color="black" fab outlined>
-													<v-icon>fab fa-linkedin-in</v-icon>
-												</v-btn>
-											</div>
-										</v-card-text>
-									</v-col>
-									<v-col col="12" md="4"> </v-col>
-								</v-row>
-							</v-window-item>
-
-							<v-window-item :value="2"> </v-window-item>
-						</v-window>
-					</v-card>
-				</v-col>
+				<v-card max-width="500" class="mx-auto">
+					<v-card-title>
+						<h1>Login</h1>
+					</v-card-title>
+					<v-card-text>
+						<v-form>
+							<v-text-field
+								label="Username"
+								prepend-icon="mdi-account-circle"
+								v-model="email"
+								placeholder=" "
+							/>
+							<v-text-field
+								:type="showPassword ? 'text' : 'password'"
+								label="Password"
+								prepend-icon="mdi-lock"
+								append-icon="mdi-eye-off"
+								v-model="password"
+								placeholder=" "
+								@click:append="showPassword = !showPassword"
+							/>
+						</v-form>
+					</v-card-text>
+					<v-divider></v-divider>
+					<v-card-actions>
+						<v-btn color="success">Register</v-btn>
+						<v-spacer></v-spacer>
+						<v-btn color="info">Login</v-btn>
+					</v-card-actions>
+				</v-card>
 			</v-row>
 		</v-container>
 	</v-app>
@@ -44,7 +41,9 @@
 		name: "Login",
 		data() {
 			return {
-				step: 1,
+				email: "",
+				password: "",
+				showPassword: "",
 			};
 		},
 		props: {
