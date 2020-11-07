@@ -39,13 +39,13 @@
 									></v-text-field>
 
 									<v-text-field
-										id="password"
+										id="password_confirmation"
 										label="Confirm password"
-										name="comfirm_password"
+										name="password_confirmation"
 										prepend-icon="mdi-lock-question"
 										type="password"
-										v-model="form.confirm_password"
-										:error-messages="errors.confirm_password"
+										v-model="form.password_confirmation"
+										:error-messages="errors.password_confirmation"
 									></v-text-field>
 								</v-form>
 							</v-card-text>
@@ -59,6 +59,15 @@
 				</v-row>
 			</v-container>
 		</v-main>
+		<v-snackbar v-model="snackbar" :timeout="timeout">
+			Registration Complete
+
+			<template v-slot:action="{ attrs }">
+				<v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+					Close
+				</v-btn>
+			</template>
+		</v-snackbar>
 	</v-app>
 </template>
 <script>
@@ -67,11 +76,13 @@
 		name: "Login",
 		data() {
 			return {
+				snackbar: false,
+				timeout: 10000,
 				form: {
 					name: "",
 					email: "",
 					password: "",
-					confirm_password: "",
+					password_confirmation: "",
 				},
 				errors: {},
 			};
@@ -83,7 +94,9 @@
 			...mapActions(["registerUser"]),
 			doRegisterUser() {
 				this.registerUser(this.form)
-					.then((response) => console.log(response.data))
+					.then((response) => {
+						this.snackbar = true;
+					})
 					.catch((e) => (this.errors = e.response.data.errors));
 			},
 		},
