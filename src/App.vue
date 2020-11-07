@@ -1,19 +1,16 @@
 <template>
-	<v-app>
-		<navbar></navbar>
-		<v-main>
-			<router-view></router-view>
-		</v-main>
-	</v-app>
+	<div id="app">
+		<router-view></router-view>
+	</div>
 </template>
 
 <script>
-	import Navbar from "@/components/Navbar";
+	// import Navbar from "@/components/Navbar";
 	import { mapActions, mapGetters } from "vuex";
 	export default {
 		name: "App",
 
-		components: { Navbar },
+		components: {},
 
 		data: () => ({}),
 
