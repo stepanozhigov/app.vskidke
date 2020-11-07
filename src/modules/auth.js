@@ -16,22 +16,21 @@ const mutations = {
 }
 const actions= {
     async loginUser(context,form) {
-        try {
-            axios.defaults.withCredentials = true;
-            const resp = await axios.get('/sanctum/csrf-coockie');
-            console.log(resp.data);
-            context.commit('SET_USER',resp.data);
-            } catch(error) {
-            console.log(error);
-            } finally {
-            console.log('finally');
-            }
+        return new Promise((resolve, reject) => {
+            axios.post('api/login',form).then(response => {
+                context.commit('SET_TOKEN', response.data)
+                resolve(response);
+            resolve(response);
+            }, error => {
+                reject(error);
+            })
+        })
     },
         registerUser(context,form) {
             return new Promise((resolve, reject) => {
                 axios.post('api/register',form).then(response => {
-                context.commit('SET_USER', response.data)
-                resolve(response);
+                    context.commit('SET_USER', response.data)
+                    resolve(response);
                 }, error => {
                     reject(error);
                 })

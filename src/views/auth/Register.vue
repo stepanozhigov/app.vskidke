@@ -59,13 +59,11 @@
 				</v-row>
 			</v-container>
 		</v-main>
-		<v-snackbar v-model="snackbar" :timeout="timeout">
+		<v-snackbar top color="success" v-model="snackbar" :timeout="timeout">
 			Registration Complete
 
 			<template v-slot:action="{ attrs }">
-				<v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
-					Close
-				</v-btn>
+				<v-btn color="primary" v-bind="attrs" @click="goLogin"> Login </v-btn>
 			</template>
 		</v-snackbar>
 	</v-app>
@@ -77,7 +75,7 @@
 		data() {
 			return {
 				snackbar: false,
-				timeout: 10000,
+				timeout: "-1",
 				form: {
 					name: "",
 					email: "",
@@ -98,6 +96,12 @@
 						this.snackbar = true;
 					})
 					.catch((e) => (this.errors = e.response.data.errors));
+			},
+			goLogin() {
+				this.snackbar = false;
+				setTimeout(() => {
+					this.$router.push({ name: "Login" });
+				}, 300);
 			},
 		},
 	};
