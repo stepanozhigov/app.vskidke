@@ -48,7 +48,11 @@
 			return {
 				drawer: false,
 				links: [
-					{ icon: "mdi-view-dashboard-outline", text: "Dashboard", route: "/" },
+					{
+						icon: "mdi-view-dashboard-outline",
+						text: "Dashboard",
+						route: "/dashboard",
+					},
 					{ icon: "mdi-lan", text: "Projects", route: "/projects" },
 					{ icon: "mdi-account-group-outline", text: "Team", route: "/team" },
 				],

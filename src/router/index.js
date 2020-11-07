@@ -1,58 +1,47 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-
+import Dashboard from '../views/Dashboard.vue'
+import Projects from '../views/Projects.vue'
+import Team from '../views/Team.vue'
+import Login from '../views/Login.vue'
+import Register from '../views/Register.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: Home,
-    beforeEnter: (to, from, next) => {
-      if(!localStorage.getItem('loggedIn')) {
-        next({name:'login'})
-      } else {
-        next();
+    children: [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: Dashboard
+      },
+      {
+        path: '/projects',
+        name: 'Projects',
+        component: Projects
+      },
+      {
+        path: '/team', 
+        name: 'Team',
+        component: Team
+      },
+      {
+        path: '/login',
+        name: 'Login',
+        component: Login
+      },
+      {
+        path: '/register',
+        name: 'Register',
+        component: Register
       }
-    }
+    ]
   },
-  {
-    path: '/projects',
-    name: 'projects',
-    component: () => import('../views/Projects.vue'),
-    beforeEnter: (to, from, next) => {
-      if(!localStorage.getItem('loggedIn')) {
-        next({name:'login'})
-      } else {
-        next();
-      }
-    }
-  },
-  {
-    path: '/team',
-    name: 'team',
-    component: () => import('../views/Team.vue'),
-    beforeEnter: (to, from, next) => {
-      if(!localStorage.getItem('loggedIn')) {
-        next({name:'login'})
-      } else {
-        next();
-      }
-    }
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/Login.vue')
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('../views/Register.vue')
-  }
-
 ]
 
 const router = new VueRouter({

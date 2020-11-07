@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<navbar v-if="loggedIn"></navbar>
+		<navbar></navbar>
 		<v-main>
 			<router-view></router-view>
 		</v-main>
@@ -15,13 +15,9 @@
 
 		components: { Navbar },
 
-		data: () => ({
-			//
-		}),
+		data: () => ({}),
 
-		computed: {
-			...mapGetters(["loggedIn"]),
-		},
+		computed: {},
 
 		mounted() {},
 	};
