@@ -74,8 +74,8 @@ router.beforeEach((to, from, next) => {
 
   //routes require auth
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    console.log(loggedIn());
-    console.log(to.matched);
+    //console.log(loggedIn());
+    //console.log(to.matched);
 
     //needs authentication
     if (!loggedIn()) {
@@ -84,7 +84,7 @@ router.beforeEach((to, from, next) => {
         //query: { redirect: to.fullPath }
       })
     }
-    //if authenticated already
+    //if authenticated already ->continue
     else {
       next()
     }

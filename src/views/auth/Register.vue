@@ -1,94 +1,91 @@
 <template>
 	<v-app>
-		<v-container fluid fill-height>
-			<v-row align="center" justify="center">
-				<v-card class="mx-auto">
-					<v-card-title>
-						<h1>Register</h1>
-					</v-card-title>
-					<v-card-text>
-						<v-form>
-							<v-text-field
-								label="Full Name"
-								prepend-icon="mdi-account-circle"
-								v-model="name"
-								placeholder=" "
-								:rules="nameRules"
-								hide-details="auto"
-								required
-							/>
-							<v-text-field
-								label="E-mail"
-								prepend-icon="mdi-email"
-								v-model="email"
-								placeholder=" "
-								:rules="emailRules"
-								required
-							/>
-							<v-text-field
-								:type="showPassword ? 'text' : 'password'"
-								label="Password"
-								prepend-icon="mdi-lock"
-								append-icon="mdi-eye-off"
-								v-model="password"
-								placeholder=" "
-								:rules="passwordRules"
-								required
-								@click:append="showPassword = !showPassword"
-							/>
-							<v-text-field
-								:type="showPassword ? 'text' : 'password'"
-								label="Confirm Password"
-								prepend-icon="mdi-lock"
-								v-model="confirm_password"
-								:rules="confirmRules"
-								required
-								placeholder=" "
-							/>
-						</v-form>
-					</v-card-text>
-					<v-divider></v-divider>
-					<v-card-actions>
-						<v-btn color="info">Login</v-btn>
+		<v-main>
+			<v-container class="fill-height" fluid>
+				<v-row align="center" justify="center">
+					<v-col cols="12" sm="8" md="4">
+						<v-card class="elevation-12">
+							<v-toolbar color="primary" dark flat>
+								<v-toolbar-title>Register</v-toolbar-title>
+							</v-toolbar>
+							<v-card-text>
+								<v-form>
+									<v-text-field
+										label="Name"
+										name="name"
+										prepend-icon="mdi-account"
+										type="text"
+										v-model="form.name"
+										:error-messages="errors.name"
+									></v-text-field>
 
-						<v-spacer></v-spacer>
-						<v-btn color="success">Register</v-btn>
-					</v-card-actions>
-				</v-card>
-			</v-row>
-		</v-container>
+									<v-text-field
+										label="E-mail"
+										name="email"
+										prepend-icon="mdi-email"
+										type="text"
+										v-model="form.email"
+										:error-messages="errors.email"
+									></v-text-field>
+
+									<v-text-field
+										id="password"
+										label="Password"
+										name="password"
+										prepend-icon="mdi-lock"
+										type="password"
+										v-model="form.password"
+										:error-messages="errors.password"
+									></v-text-field>
+
+									<v-text-field
+										id="password"
+										label="Confirm password"
+										name="comfirm_password"
+										prepend-icon="mdi-lock-question"
+										type="password"
+										v-model="form.confirm_password"
+										:error-messages="errors.confirm_password"
+									></v-text-field>
+								</v-form>
+							</v-card-text>
+							<v-card-actions>
+								<router-link class="ml-3" to="/login">Login</router-link>
+								<v-spacer></v-spacer>
+								<v-btn color="primary" @click="doRegisterUser">Register</v-btn>
+							</v-card-actions>
+						</v-card>
+					</v-col>
+				</v-row>
+			</v-container>
+		</v-main>
 	</v-app>
 </template>
 <script>
+	import { mapActions, mapGetters } from "vuex";
 	export default {
 		name: "Login",
 		data() {
 			return {
-				name: "",
-				email: "",
-				password: "",
-				confirm_password: "",
-				showPassword: "",
-				nameRules: [
-					(value) => !!value || "Required.",
-					(value) => (value && value.length >= 3) || "Min 3 characters",
-				],
-				emailRules: [
-					(v) => !!v || "E-mail is required",
-					(v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-				],
-				passwordRules: [
-					(value) => !!value || "Required.",
-					(value) => (value && value.length >= 7) || "Min 7 characters",
-				],
-				confirmRules: [
-					(value) => !!value || "Required.",
-					(value) => value === this.password || "Password mismatch",
-				],
+				form: {
+					name: "",
+					email: "",
+					password: "",
+					confirm_password: "",
+				},
+				errors: {},
 			};
 		},
 		props: {
 			source: String,
+		},
+		methods: {
+			...mapActions(["registerUser"]),
+			doRegisterUser() {
+				this.registerUser(this.form)
+					.then((response) => console.log(response.data))
+					.catch((e) => (this.errors = e.response.data.errors));
+			},
 		},
 	};
 </script>

@@ -3,19 +3,19 @@ import axios from 'axios'
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
   
 const state = {
-    loggedIn: false,
+    token: null,
     user: null
 }
 const getters = {
-    loggedIn: state => state.employees,
+    token: state => state.token,
 }
 const mutations = {
-    SET_LOGGED_IN: (state) => (state.loggedIn = 1),
+    SET_TOKEN: (state,payload) => (state.token = payload),
     SET_USER: (state,payload) => (state.user = payload),
     UNSET_USER: (state) => (state.user = null),
 }
 const actions= {
-    async login(context) {
+    async loginUser(context,form) {
         try {
             axios.defaults.withCredentials = true;
             const resp = await axios.get('/sanctum/csrf-coockie');
@@ -27,6 +27,16 @@ const actions= {
             console.log('finally');
             }
     },
+        registerUser(context,form) {
+            return new Promise((resolve, reject) => {
+                axios.post('api/register',form).then(response => {
+                context.commit('SET_USER', response.data)
+                resolve(response);
+                }, error => {
+                    reject(error);
+                })
+            })
+        },
 }
 
 export default {
