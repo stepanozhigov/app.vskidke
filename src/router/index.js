@@ -59,8 +59,7 @@ const router = new VueRouter({
 //Authentication
 
 function loggedIn() {
-  //return localStorage.getItem('loggedIn')
-  return true;
+  return localStorage.getItem('loggedIn');
 }
 
 router.beforeEach((to, from, next) => {
@@ -75,6 +74,7 @@ router.beforeEach((to, from, next) => {
 
   //routes require auth
   if (to.matched.some(record => record.meta.requiresAuth)) {
+    console.log(loggedIn());
     console.log(to.matched);
 
     //needs authentication
@@ -92,9 +92,23 @@ router.beforeEach((to, from, next) => {
   
   //routes not require auth
   else if (to.matched.some(record => record.meta.guest)) {
-    next({
-      path: '/dashboard',
-    })
+
+    //logged in ->dashboard
+    if (loggedIn()) {
+      next({
+        path: '/dashboard',
+      }) 
+    }
+
+    //not logged in -> next
+    else {
+      next()
+    }
+  } 
+  
+  //other routes continue
+  else {
+    next()
   }
 })
 
