@@ -9,7 +9,7 @@
 								<v-toolbar-title>Register</v-toolbar-title>
 							</v-toolbar>
 							<v-card-text>
-								<v-form ref="form">
+								<v-form ref="form" lazy-validation>
 									<v-text-field
 										label="Name"
 										name="name"
