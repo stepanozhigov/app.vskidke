@@ -4,12 +4,12 @@
 			<v-container class="fill-height" fluid>
 				<v-row align="center" justify="center">
 					<v-col cols="12" sm="8" md="4">
-						<v-card class="elevation-12">
+						<v-card class="elevation-12" :loading="isLoading">
 							<v-toolbar color="primary" dark flat>
 								<v-toolbar-title>Register</v-toolbar-title>
 							</v-toolbar>
 							<v-card-text>
-								<v-form>
+								<v-form ref="form">
 									<v-text-field
 										label="Name"
 										name="name"
@@ -61,9 +61,10 @@
 		</v-main>
 		<v-snackbar top color="success" v-model="snackbar" :timeout="timeout">
 			Registration Complete
-
 			<template v-slot:action="{ attrs }">
-				<v-btn color="primary" v-bind="attrs" @click="goLogin"> Login </v-btn>
+				<v-btn color="primary" v-bind="attrs" @click="goLogin">
+					Login Now</v-btn
+				>
 			</template>
 		</v-snackbar>
 	</v-app>
@@ -74,6 +75,7 @@
 		name: "Login",
 		data() {
 			return {
+				isLoading: false,
 				snackbar: false,
 				timeout: "-1",
 				form: {
@@ -91,11 +93,15 @@
 		methods: {
 			...mapActions(["registerUser"]),
 			doRegisterUser() {
+				this.isLoading = "red";
 				this.registerUser(this.form)
 					.then((response) => {
 						this.snackbar = true;
+						this.$refs.form.reset();
+						this.$refs.form.resetValidation();
 					})
-					.catch((e) => (this.errors = e.response.data.errors));
+					.catch((e) => (this.errors = e.response.data.errors))
+					.finally(() => (this.isLoading = false));
 			},
 			goLogin() {
 				this.snackbar = false;

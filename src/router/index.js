@@ -59,7 +59,7 @@ const router = new VueRouter({
 //Authentication
 
 function loggedIn() {
-  return localStorage.getItem('loggedIn');
+  return localStorage.getItem('token');
 }
 
 router.beforeEach((to, from, next) => {

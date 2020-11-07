@@ -15,12 +15,11 @@ const mutations = {
     UNSET_USER: (state) => (state.user = null),
 }
 const actions= {
-    async loginUser(context,form) {
+    loginUser(context,form) {
         return new Promise((resolve, reject) => {
             axios.post('api/login',form).then(response => {
                 context.commit('SET_TOKEN', response.data)
                 resolve(response);
-            resolve(response);
             }, error => {
                 reject(error);
             })
@@ -29,7 +28,8 @@ const actions= {
         registerUser(context,form) {
             return new Promise((resolve, reject) => {
                 axios.post('api/register',form).then(response => {
-                    context.commit('SET_USER', response.data)
+                    console.log(response)
+                    context.commit('SET_USER', response)
                     resolve(response);
                 }, error => {
                     reject(error);
