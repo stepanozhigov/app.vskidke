@@ -51,7 +51,7 @@
 				<!-- Logout link -->
 				<v-list-item link @click="doLogoutUser">
 					<v-list-item-action>
-						<v-icon>mdi-account-group</v-icon>
+						<v-icon>mdi-logout</v-icon>
 					</v-list-item-action>
 					<v-list-item-content>
 						<v-list-item-title>Logout</v-list-item-title>
