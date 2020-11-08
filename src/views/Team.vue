@@ -1,19 +1,19 @@
 <template>
 	<v-data-table
 		:headers="headers"
-		:items="desserts"
+		:items="employees"
 		sort-by="calories"
 		class="elevation-1"
 	>
 		<template v-slot:top>
 			<v-toolbar flat>
-				<v-toolbar-title>My CRUD</v-toolbar-title>
+				<v-toolbar-title>Team</v-toolbar-title>
 				<v-divider class="mx-4" inset vertical></v-divider>
 				<v-spacer></v-spacer>
 				<v-dialog v-model="dialog" max-width="500px">
 					<template v-slot:activator="{ on, attrs }">
 						<v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
-							New Item
+							New Employee
 						</v-btn>
 					</template>
 					<v-card>
@@ -27,19 +27,19 @@
 									<v-col cols="12" sm="6" md="4">
 										<v-text-field
 											v-model="editedItem.name"
-											label="Dessert name"
+											label="Full Name"
 										></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
 										<v-text-field
 											v-model="editedItem.calories"
-											label="Calories"
+											label="E-mail"
 										></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
 										<v-text-field
 											v-model="editedItem.fat"
-											label="Fat (g)"
+											label="Phone"
 										></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
@@ -84,34 +84,40 @@
 				</v-dialog>
 			</v-toolbar>
 		</template>
+
 		<template v-slot:item.actions="{ item }">
 			<v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
 			<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
 		</template>
+
 		<template v-slot:no-data>
 			<v-btn color="primary" @click="initialize"> Reset </v-btn>
 		</template>
 	</v-data-table>
 </template>
 <script>
+	import { mapActions, mapGetters } from "vuex";
 	export default {
 		data: () => ({
 			dialog: false,
 			dialogDelete: false,
 			headers: [
 				{
-					text: "Dessert (100g serving)",
+					text: "First Name",
 					align: "start",
-					sortable: false,
-					value: "name",
+					value: "first_name",
 				},
-				{ text: "Calories", value: "calories" },
-				{ text: "Fat (g)", value: "fat" },
-				{ text: "Carbs (g)", value: "carbs" },
-				{ text: "Protein (g)", value: "protein" },
+				{
+					text: "Last Name",
+					align: "start",
+					value: "last_name",
+				},
+				{ text: "E-mail", value: "email", sortable: false },
+				{ text: "Phone", value: "phone" },
+				{ text: "Birthday", value: "birthday" },
 				{ text: "Actions", value: "actions", sortable: false },
 			],
-			desserts: [],
+			//employees: [],
 			editedIndex: -1,
 			editedItem: {
 				name: "",
@@ -130,6 +136,7 @@
 		}),
 
 		computed: {
+			...mapGetters(["employees"]),
 			formTitle() {
 				return this.editedIndex === -1 ? "New Item" : "Edit Item";
 			},
@@ -149,7 +156,11 @@
 		},
 
 		methods: {
+			...mapActions(["getEmployees"]),
 			initialize() {
+				//load all employees
+				this.getEmployees();
+
 				this.desserts = [
 					{
 						name: "Frozen Yogurt",

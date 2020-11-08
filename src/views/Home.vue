@@ -62,11 +62,11 @@
 
 		<v-app-bar app color="indigo" dark>
 			<v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-			<v-toolbar-title>Application</v-toolbar-title>
+			<v-toolbar-title>CRUD Application</v-toolbar-title>
 		</v-app-bar>
 
 		<v-main>
-			<v-container class="fill-height" fluid>
+			<v-container fluid>
 				<v-row align="center" justify="center">
 					<v-col class="text-center">
 						<router-view class="main-view"></router-view>

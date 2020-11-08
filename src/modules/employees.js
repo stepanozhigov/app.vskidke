@@ -16,8 +16,8 @@ const actions= {
         try {
             axios.defaults.withCredentials = true;
             const resp = await axios.get('/api/employees');
-            context.commit('SET_EMPLOYEES',resp.data);
-            console.log(resp.data);
+            context.commit('SET_EMPLOYEES',resp.data.data);
+            console.log(resp.data.data);
         } catch(error) {
             console.log(error);
         } finally {
