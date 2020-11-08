@@ -15,7 +15,6 @@
 						</v-btn>
 					</template>
 
-					<!-- DIALOG BOX -->
 					<v-card>
 						<v-card-title>
 							<span class="headline">{{ formTitle }}</span>
@@ -23,40 +22,55 @@
 
 						<v-card-text>
 							<v-container>
-								<v-row>
-									<v-col cols="12" sm="12" md="6">
-										<v-text-field
-											v-model="editedItem.first_name"
-											label="First Name"
-											:rules="nameRules"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="12" md="6">
-										<v-text-field
-											v-model="editedItem.last_name"
-											label="Last Name"
-											:rules="nameRules"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="12" md="12">
-										<v-text-field
-											v-model="editedItem.email"
-											label="E-mail"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="6" md="6">
-										<v-text-field
-											v-model="editedItem.birthday"
-											label="Birthday"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="6" md="6">
-										<v-text-field
-											v-model="editedItem.phone"
-											label="Phone"
-										></v-text-field>
-									</v-col>
-								</v-row>
+								<v-form ref="form" model="valid" lazy-validation>
+									<v-row>
+										<v-col cols="12" sm="12" md="6">
+											<v-text-field
+												v-model="editedItem.first_name"
+												label="First Name"
+												:rules="fnameRules"
+												:error-messages="errors.first_name"
+												required
+											></v-text-field>
+										</v-col>
+										<v-col cols="12" sm="12" md="6">
+											<v-text-field
+												v-model="editedItem.last_name"
+												label="Last Name"
+												:rules="lnameRules"
+												:error-messages="errors.last_name"
+												required
+											></v-text-field>
+										</v-col>
+										<v-col cols="12" sm="12" md="12">
+											<v-text-field
+												v-model="editedItem.email"
+												:rules="emailRules"
+												:error-messages="errors.email"
+												label="E-mail"
+												required
+											></v-text-field>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-text-field
+												v-model="editedItem.birthday"
+												:rules="dateRules"
+												:error-messages="errors.birthday"
+												label="Birthday"
+												required
+											></v-text-field>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-text-field
+												v-model="editedItem.phone"
+												:rules="phoneRules"
+												:error-messages="errors.phone"
+												label="Phone"
+												required
+											></v-text-field>
+										</v-col>
+									</v-row>
+								</v-form>
 							</v-container>
 						</v-card-text>
 
@@ -105,6 +119,8 @@
 		data: () => ({
 			dialog: false,
 			dialogDelete: false,
+			valid: "",
+			errors: {},
 			headers: [
 				{
 					text: "First Name",
@@ -137,9 +153,30 @@
 				birthday: "",
 			},
 
-			nameRules: [
-				(v) => !!v || "Name is required",
-				(v) => (v && v.length <= 10) || "Name must at less than 3 characters",
+			fnameRules: [
+				(v) => !!v || "First Name is required",
+				(v) => (v && v.length >= 3) || "Name must at less than 3 characters",
+			],
+			lnameRules: [
+				(v) => !!v || "First Name is required",
+				(v) => (v && v.length >= 3) || "Name must at less than 3 characters",
+			],
+			emailRules: [
+				(v) => !!v || "E-mail is required",
+				(v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+			],
+			dateRules: [
+				(v) => !!v || "Birthday is required",
+				(v) =>
+					(v && /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/.test(v)) ||
+					"Wrong date format (YYYY-MM-DD)",
+			],
+			phoneRules: [
+				(v) => !!v || "Phone is required",
+				(v) =>
+					(v &&
+						/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/.test(v)) ||
+					"Wrong phone format",
 			],
 		}),
 
@@ -170,13 +207,23 @@
 				"deleteEmployee",
 				"updateEmployee",
 			]),
+			validate() {
+				this.$refs.form.validate();
+			},
+			reset() {
+				this.$refs.form.reset();
+			},
+			resetValidation() {
+				this.$refs.form.resetValidation();
+			},
 			initialize() {
 				//load all employees
 				this.getEmployees();
 			},
 
 			editItem(item) {
-				console.log(item);
+				// this.reset();
+				// this.resetValidation();
 				this.editedIndex = item.id;
 				this.editedItem = item;
 				this.dialog = true;
@@ -194,6 +241,8 @@
 			},
 
 			close() {
+				this.$refs.form.reset();
+				this.$refs.form.resetValidation();
 				this.dialog = false;
 				this.$nextTick(() => {
 					this.editedItem = Object.assign({}, this.defaultItem);
@@ -210,17 +259,35 @@
 			},
 
 			save() {
-				//new
-				if (this.editedIndex == -1) {
-					this.addEmployee(this.editedItem).then(() => {
-						this.getEmployees().then(() => this.close());
-					});
-				}
-				//edit
-				else {
-					this.updateEmployee(this.editedItem).then(() => {
-						this.getEmployees().then(() => this.close());
-					});
+				if (this.$refs.form.validate()) {
+					//new
+					if (this.editedIndex == -1) {
+						this.addEmployee(this.editedItem)
+							.then(() => {
+								this.$refs.form.reset();
+								this.$refs.form.resetValidation();
+								this.close();
+								this.getEmployees();
+							})
+							.catch((e) => {
+								//console.log(e.response.data.errors);
+								this.errors = e.response.data.errors;
+							});
+					}
+					//edit
+					else {
+						this.updateEmployee(this.editedItem)
+							.then(() => {
+								this.$refs.form.reset();
+								this.$refs.form.resetValidation();
+								this.close();
+								this.getEmployees();
+							})
+							.catch((e) => {
+								//console.log(e.response.data.errors);
+								this.errors = e.response.data.errors;
+							});
+					}
 				}
 			},
 		},
