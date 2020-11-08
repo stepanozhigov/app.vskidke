@@ -1,21 +1,21 @@
 <template>
-	<v-data-table
-		:headers="headers"
-		:items="employees"
-		sort-by="calories"
-		class="elevation-1"
-	>
+	<v-data-table :headers="headers" :items="employees" class="elevation-1">
+		<!-- TOOLBAR -->
 		<template v-slot:top>
 			<v-toolbar flat>
 				<v-toolbar-title>Team</v-toolbar-title>
 				<v-divider class="mx-4" inset vertical></v-divider>
 				<v-spacer></v-spacer>
+
+				<!-- OPEN CREATE DIALOG BOX -->
 				<v-dialog v-model="dialog" max-width="500px">
 					<template v-slot:activator="{ on, attrs }">
 						<v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
 							New Employee
 						</v-btn>
 					</template>
+
+					<!-- DIALOG BOX -->
 					<v-card>
 						<v-card-title>
 							<span class="headline">{{ formTitle }}</span>
@@ -24,34 +24,36 @@
 						<v-card-text>
 							<v-container>
 								<v-row>
-									<v-col cols="12" sm="6" md="4">
+									<v-col cols="12" sm="12" md="6">
 										<v-text-field
-											v-model="editedItem.name"
-											label="Full Name"
+											v-model="editedItem.first_name"
+											label="First Name"
+											:rules="nameRules"
 										></v-text-field>
 									</v-col>
-									<v-col cols="12" sm="6" md="4">
+									<v-col cols="12" sm="12" md="6">
 										<v-text-field
-											v-model="editedItem.calories"
+											v-model="editedItem.last_name"
+											label="Last Name"
+											:rules="nameRules"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" sm="12" md="12">
+										<v-text-field
+											v-model="editedItem.email"
 											label="E-mail"
 										></v-text-field>
 									</v-col>
-									<v-col cols="12" sm="6" md="4">
+									<v-col cols="12" sm="6" md="6">
 										<v-text-field
-											v-model="editedItem.fat"
+											v-model="editedItem.birthday"
+											label="Birthday"
+										></v-text-field>
+									</v-col>
+									<v-col cols="12" sm="6" md="6">
+										<v-text-field
+											v-model="editedItem.phone"
 											label="Phone"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="6" md="4">
-										<v-text-field
-											v-model="editedItem.carbs"
-											label="Carbs (g)"
-										></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="6" md="4">
-										<v-text-field
-											v-model="editedItem.protein"
-											label="Protein (g)"
 										></v-text-field>
 									</v-col>
 								</v-row>
@@ -65,6 +67,7 @@
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
+				<!-- DELETE DIALOG BOX -->
 				<v-dialog v-model="dialogDelete" max-width="500px">
 					<v-card>
 						<v-card-title class="headline"
@@ -85,6 +88,7 @@
 			</v-toolbar>
 		</template>
 
+		<!-- ACTION BTNs-->
 		<template v-slot:item.actions="{ item }">
 			<v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
 			<v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
@@ -112,33 +116,37 @@
 					align: "start",
 					value: "last_name",
 				},
-				{ text: "E-mail", value: "email", sortable: false },
+				{ text: "E-mail", value: "email", sortable: true },
 				{ text: "Phone", value: "phone" },
 				{ text: "Birthday", value: "birthday" },
 				{ text: "Actions", value: "actions", sortable: false },
 			],
-			//employees: [],
 			editedIndex: -1,
 			editedItem: {
-				name: "",
-				calories: 0,
-				fat: 0,
-				carbs: 0,
-				protein: 0,
+				first_name: "",
+				last_name: "",
+				email: "",
+				phone: "",
+				birthday: "",
 			},
 			defaultItem: {
-				name: "",
-				calories: 0,
-				fat: 0,
-				carbs: 0,
-				protein: 0,
+				first_name: "",
+				last_name: "",
+				email: "",
+				phone: "",
+				birthday: "",
 			},
+
+			nameRules: [
+				(v) => !!v || "Name is required",
+				(v) => (v && v.length <= 10) || "Name must at less than 3 characters",
+			],
 		}),
 
 		computed: {
 			...mapGetters(["employees"]),
 			formTitle() {
-				return this.editedIndex === -1 ? "New Item" : "Edit Item";
+				return this.editedIndex === -1 ? "New Employee" : "Edit Employee";
 			},
 		},
 
@@ -156,100 +164,33 @@
 		},
 
 		methods: {
-			...mapActions(["getEmployees"]),
+			...mapActions([
+				"getEmployees",
+				"addEmployee",
+				"deleteEmployee",
+				"updateEmployee",
+			]),
 			initialize() {
 				//load all employees
 				this.getEmployees();
-
-				this.desserts = [
-					{
-						name: "Frozen Yogurt",
-						calories: 159,
-						fat: 6.0,
-						carbs: 24,
-						protein: 4.0,
-					},
-					{
-						name: "Ice cream sandwich",
-						calories: 237,
-						fat: 9.0,
-						carbs: 37,
-						protein: 4.3,
-					},
-					{
-						name: "Eclair",
-						calories: 262,
-						fat: 16.0,
-						carbs: 23,
-						protein: 6.0,
-					},
-					{
-						name: "Cupcake",
-						calories: 305,
-						fat: 3.7,
-						carbs: 67,
-						protein: 4.3,
-					},
-					{
-						name: "Gingerbread",
-						calories: 356,
-						fat: 16.0,
-						carbs: 49,
-						protein: 3.9,
-					},
-					{
-						name: "Jelly bean",
-						calories: 375,
-						fat: 0.0,
-						carbs: 94,
-						protein: 0.0,
-					},
-					{
-						name: "Lollipop",
-						calories: 392,
-						fat: 0.2,
-						carbs: 98,
-						protein: 0,
-					},
-					{
-						name: "Honeycomb",
-						calories: 408,
-						fat: 3.2,
-						carbs: 87,
-						protein: 6.5,
-					},
-					{
-						name: "Donut",
-						calories: 452,
-						fat: 25.0,
-						carbs: 51,
-						protein: 4.9,
-					},
-					{
-						name: "KitKat",
-						calories: 518,
-						fat: 26.0,
-						carbs: 65,
-						protein: 7,
-					},
-				];
 			},
 
 			editItem(item) {
-				this.editedIndex = this.desserts.indexOf(item);
-				this.editedItem = Object.assign({}, item);
+				console.log(item);
+				this.editedIndex = item.id;
+				this.editedItem = item;
 				this.dialog = true;
 			},
 
 			deleteItem(item) {
-				this.editedIndex = this.desserts.indexOf(item);
-				this.editedItem = Object.assign({}, item);
+				this.editedIndex = item.id;
 				this.dialogDelete = true;
 			},
 
 			deleteItemConfirm() {
-				this.desserts.splice(this.editedIndex, 1);
-				this.closeDelete();
+				this.deleteEmployee(this.editedIndex).then(() =>
+					this.getEmployees().then(() => this.closeDelete())
+				);
 			},
 
 			close() {
@@ -269,12 +210,18 @@
 			},
 
 			save() {
-				if (this.editedIndex > -1) {
-					Object.assign(this.desserts[this.editedIndex], this.editedItem);
-				} else {
-					this.desserts.push(this.editedItem);
+				//new
+				if (this.editedIndex == -1) {
+					this.addEmployee(this.editedItem).then(() => {
+						this.getEmployees().then(() => this.close());
+					});
 				}
-				this.close();
+				//edit
+				else {
+					this.updateEmployee(this.editedItem).then(() => {
+						this.getEmployees().then(() => this.close());
+					});
+				}
 			},
 		},
 	};

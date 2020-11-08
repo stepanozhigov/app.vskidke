@@ -3,7 +3,7 @@ import axios from 'axios'
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL;
   
 const state = {
-    token: null,
+    token: localStorage.getItem('token'),
     user: null
 }
 const getters = {
