@@ -26,6 +26,7 @@
 									<v-row>
 										<v-col cols="12" sm="12" md="6">
 											<v-text-field
+												prepend-icon="mdi-calendar"
 												v-model="editedItem.first_name"
 												label="First Name"
 												:rules="fnameRules"
@@ -35,6 +36,7 @@
 										</v-col>
 										<v-col cols="12" sm="12" md="6">
 											<v-text-field
+												prepend-icon="mdi-calendar"
 												v-model="editedItem.last_name"
 												label="Last Name"
 												:rules="lnameRules"
@@ -44,6 +46,7 @@
 										</v-col>
 										<v-col cols="12" sm="12" md="12">
 											<v-text-field
+												prepend-icon="mdi-calendar"
 												v-model="editedItem.email"
 												:rules="emailRules"
 												:error-messages="errors.email"
@@ -51,17 +54,38 @@
 												required
 											></v-text-field>
 										</v-col>
-										<v-col cols="12" sm="6" md="6">
-											<v-text-field
-												v-model="editedItem.birthday"
-												:rules="dateRules"
-												:error-messages="errors.birthday"
-												label="Birthday"
-												required
-											></v-text-field>
+
+										<!-- Birthday Wgt -->
+										<v-col cols="12" sm="12" md="6">
+											<v-menu
+												v-model="menu2"
+												:close-on-content-click="false"
+												:nudge-right="40"
+												transition="scale-transition"
+												offset-y
+												min-width="290px"
+											>
+												<template v-slot:activator="{ on, attrs }">
+													<v-text-field
+														v-model="date"
+														label="Birthday"
+														prepend-icon="mdi-calendar"
+														readonly
+														v-bind="attrs"
+														v-on="on"
+														:error-messages="errors.birthday"
+													></v-text-field>
+												</template>
+												<v-date-picker
+													v-model="date"
+													@input="menu2 = false"
+												></v-date-picker>
+											</v-menu>
 										</v-col>
+
 										<v-col cols="12" sm="6" md="6">
 											<v-text-field
+												prepend-icon="mdi-calendar"
 												v-model="editedItem.phone"
 												:rules="phoneRules"
 												:error-messages="errors.phone"
@@ -117,8 +141,12 @@
 	import { mapActions, mapGetters } from "vuex";
 	export default {
 		data: () => ({
+			date: new Date().toISOString().substr(0, 10),
+			menu2: false,
+			modal: false,
 			dialog: false,
 			dialogDelete: false,
+			isLoading: false,
 			valid: "",
 			errors: {},
 			headers: [
@@ -185,14 +213,24 @@
 			formTitle() {
 				return this.editedIndex === -1 ? "New Employee" : "Edit Employee";
 			},
+			datepicker() {
+				return this.editedItem.birthday || new Date().toISOString().substr(0, 10);
+			},
 		},
 
 		watch: {
+			date(val) {
+				this.editedItem = val;
+			},
+
 			dialog(val) {
 				val || this.close();
 			},
 			dialogDelete(val) {
 				val || this.closeDelete();
+			},
+			menu(val) {
+				val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
 			},
 		},
 
