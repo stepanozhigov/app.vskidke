@@ -1,7 +1,14 @@
 <template>
-	<v-data-table :headers="headers" :items="employees" class="elevation-1">
+	<v-data-table
+		:headers="headers"
+		:items="employees"
+		:search="search"
+		class="elevation-1"
+	>
 		<!-- TOOLBAR -->
 		<template v-slot:top>
+			<!-- Search -->
+			<v-text-field v-model="search" label="Search" class="mx-4"></v-text-field>
 			<v-toolbar flat>
 				<v-toolbar-title>Team</v-toolbar-title>
 				<v-divider class="mx-4" inset vertical></v-divider>
@@ -26,7 +33,7 @@
 									<v-row>
 										<v-col cols="12" sm="12" md="6">
 											<v-text-field
-												prepend-icon="mdi-calendar"
+												prepend-icon="mdi-card-account-details-outline"
 												v-model="editedItem.first_name"
 												label="First Name"
 												:rules="fnameRules"
@@ -36,7 +43,7 @@
 										</v-col>
 										<v-col cols="12" sm="12" md="6">
 											<v-text-field
-												prepend-icon="mdi-calendar"
+												prepend-icon="mdi-card-account-details-outline"
 												v-model="editedItem.last_name"
 												label="Last Name"
 												:rules="lnameRules"
@@ -44,9 +51,11 @@
 												required
 											></v-text-field>
 										</v-col>
+
+										<!-- mdiEmail -->
 										<v-col cols="12" sm="12" md="12">
 											<v-text-field
-												prepend-icon="mdi-calendar"
+												prepend-icon="mdi-email"
 												v-model="editedItem.email"
 												:rules="emailRules"
 												:error-messages="errors.email"
@@ -67,7 +76,7 @@
 											>
 												<template v-slot:activator="{ on, attrs }">
 													<v-text-field
-														v-model="date"
+														v-model="editedItem.birthday"
 														label="Birthday"
 														prepend-icon="mdi-calendar"
 														readonly
@@ -77,7 +86,7 @@
 													></v-text-field>
 												</template>
 												<v-date-picker
-													v-model="date"
+													v-model="editedItem.birthday"
 													@input="menu2 = false"
 												></v-date-picker>
 											</v-menu>
@@ -85,7 +94,7 @@
 
 										<v-col cols="12" sm="6" md="6">
 											<v-text-field
-												prepend-icon="mdi-calendar"
+												prepend-icon="mdi-phone"
 												v-model="editedItem.phone"
 												:rules="phoneRules"
 												:error-messages="errors.phone"
@@ -141,7 +150,7 @@
 	import { mapActions, mapGetters } from "vuex";
 	export default {
 		data: () => ({
-			date: new Date().toISOString().substr(0, 10),
+			search: "",
 			menu2: false,
 			modal: false,
 			dialog: false,
@@ -219,10 +228,6 @@
 		},
 
 		watch: {
-			date(val) {
-				this.editedItem = val;
-			},
-
 			dialog(val) {
 				val || this.close();
 			},
