@@ -102,6 +102,19 @@
 												required
 											></v-text-field>
 										</v-col>
+
+										<!-- SELECT PROJECTS -->
+										<!-- <v-col cols="12" sm="12">
+											<v-select
+												v-model="editedItem.phone"
+												:items="editedItem.phone.projects"
+												label="Select"
+												multiple
+												chips
+												hint="What are the target regions"
+												persistent-hint
+											></v-select>
+										</v-col> -->
 									</v-row>
 								</v-form>
 							</v-container>
@@ -284,12 +297,12 @@
 			},
 
 			close() {
-				this.$refs.form.reset();
-				this.$refs.form.resetValidation();
 				this.dialog = false;
 				this.$nextTick(() => {
 					this.editedItem = Object.assign({}, this.defaultItem);
 					this.editedIndex = -1;
+					this.$refs.form.reset();
+					this.$refs.form.resetValidation();
 				});
 			},
 
@@ -298,6 +311,8 @@
 				this.$nextTick(() => {
 					this.editedItem = Object.assign({}, this.defaultItem);
 					this.editedIndex = -1;
+					this.$refs.form.reset();
+					this.$refs.form.resetValidation();
 				});
 			},
 
